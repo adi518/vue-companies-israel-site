@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css?family=Inter:300,700&display=swap");
+@import "prism-themes/themes/prism-duotone-space.css";
+@import "animate.css/animate.min.css";
+@import "variables";
+
+:root {
+  --container-width: 80%;
+  --transition-duration: 0.25s;
+  --color-body: #{$color-body};
+  --color-grey: #{$color-grey};
+  --color-hover: #{$color-hover};
+  --color-error: #{$color-error};
+  --color-primary: #{$color-primary};
+  --color-primary2: #{$color-primary2};
+  --color-secondary: #{$color-secondary};
+  --color-secondary2: #{$color-secondary2};
+}
+
+html {
+  font-size: 1px; // make px/rem ratio 1:1
+  box-sizing: border-box;
+
+  @media (max-width: 575.98px) {
+    font-size: 0.825px;
+  }
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+* {
+  &:focus {
+    // https://www.a11yproject.com/posts/2013-01-25-never-0remove-css-outlines/
+    outline-width: thin;
+    outline-style: solid;
+    outline-color: transparent;
+  }
+}
+
+body {
+  margin: 0;
+  color: var(--color-body);
+  line-height: 1.5;
+  font-size: 16rem;
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-primary2);
+  transition: color var(--transition-duration);
+
+  &:hover {
+    color: var(--color-hover);
+  }
+}
+
+ul {
+  padding-left: 18rem;
+}
+
+li {
+  > * {
+    vertical-align: middle;
+  }
+}
+
+// replace with bootstrap 4 utilities
+// https://getbootstrap.com/docs/5.0/utilities/flex/
+.d-flex {
+  display: flex;
+}
+
+.flex-direction {
+  flex-direction: column;
+}

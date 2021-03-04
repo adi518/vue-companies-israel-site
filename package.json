@@ -1,0 +1,15 @@
+{
+  "name": "vue-companies-israel-site",
+  "author": "Adi Sahar",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "repository": "git@github.com:adi518/vue-companies-israel-site.git",
+  "workspaces": [
+    "packages/vue-companies-israel-site"
+  ],
+  "scripts": {
+    "start": "yarn workspace @vue-companies-israel-site/site run dev",
+    "release": "yarn workspace @vue-companies-israel-site/site run release"
+  }
+}
