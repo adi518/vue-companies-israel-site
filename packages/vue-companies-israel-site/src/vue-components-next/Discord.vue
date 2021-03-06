@@ -29,11 +29,6 @@ const style = computed(() => ({ width: `${props.size + sizeOffset}rem` }));
 </script>
 
 <style lang="scss" scoped>
-.discord {
-  // margin-left: -6rem; // normalize
-  // margin-top: -2rem; // normalize
-}
-
 path {
   fill: #7289da;
 }

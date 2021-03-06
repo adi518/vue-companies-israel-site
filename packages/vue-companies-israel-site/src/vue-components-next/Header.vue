@@ -76,8 +76,6 @@ h1 {
   text-align: center;
   font-size: 20rem;
   margin-top: 32rem;
-  margin-left: 32rem;
-  margin-right: 32rem;
 }
 </style>
 

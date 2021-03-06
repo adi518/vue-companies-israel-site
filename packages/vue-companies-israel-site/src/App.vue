@@ -46,6 +46,7 @@
   </Container>
   <Container content>
     <Heading level="3" href="#explore-resources">Explore Resources</Heading>
+    <!-- udemy vue course, vue-mastery, vue-awesome, made with vue.js, daily.dev -->
     <p>Coming soon.</p>
     <Heading level="3" href="#made-by">Made by</Heading>
     <Contributors owner="JonathanDn" repository="vue-companies-israel" />
@@ -77,24 +78,16 @@
 // https://github.com/vuejs/composition-api/issues/317
 // https://stackoverflow.com/questions/64231942/vue-ref-on-custom-child-component-not-working
 
-import "./css/global.scss";
+import "./styles/global.scss";
 
 import Table from "./components/Table.vue";
-import Small from "./components/Small.vue";
 import Links from "./components/Links.vue";
-import Header from "./components/Header.vue";
-import Social from "./components/Social.vue";
-import Toggle from "./components/Toggle.vue";
-import Footer from "./components/Footer.vue";
 import Search from "./components/Search.vue";
-import Heading from "./components/Heading.vue";
-import Container from "./components/Container.vue";
-import Community from "./components/Community.vue";
-import ScrollToTop from "./components/ScrollToTop.vue";
-import Contributors from "./components/Contributors.vue";
-import GitHubAnchor from "./components/GitHubAnchor.vue";
-import Nav, { getNavHeight } from "./components/Nav.vue";
-import ScrollToAnchorCreator from "./components/ScrollToAnchor";
+
+import {
+  getNavHeight,
+  ScrollToAnchor as ScrollToAnchorCreator,
+} from "./vue-components-next";
 
 const ScrollToAnchor = ScrollToAnchorCreator(null, {
   offsetY: getNavHeight,

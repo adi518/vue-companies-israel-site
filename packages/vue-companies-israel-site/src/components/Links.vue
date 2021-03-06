@@ -18,7 +18,6 @@
 </template>
 
 <script setup>
-import GitHubStars from "./GitHubStars.vue";
 import packageJson from "../../package.json";
 </script>
 

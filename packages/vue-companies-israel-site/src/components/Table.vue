@@ -48,12 +48,10 @@
 <script>
 import axios from "axios";
 import marked from "marked";
-import Small from "./Small.vue";
 import { ref, watch, reactive, computed, onMounted } from "vue";
 
 import {
   parseTable,
-  isProduction,
   createElement,
   getTableIndex,
   getDisplayDate,
@@ -168,7 +166,6 @@ export default {
     const tdStyle = computed(() => ({ width: `${100 / state.head.length}%` }));
 
     return {
-      Small,
       root,
       state,
       getRef,
