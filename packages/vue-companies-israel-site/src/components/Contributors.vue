@@ -56,6 +56,7 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .contributors {
   display: flex;
+  padding-left: 8rem;
   margin-top: 32rem;
 
   img {

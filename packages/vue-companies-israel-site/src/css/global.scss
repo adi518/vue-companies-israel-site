@@ -70,12 +70,20 @@ li {
   }
 }
 
+svg {
+  display: block;
+}
+
 // replace with bootstrap 4 utilities
 // https://getbootstrap.com/docs/5.0/utilities/flex/
 .d-flex {
   display: flex;
 }
 
-.flex-direction {
+.flex-column {
   flex-direction: column;
+}
+
+.align-items-end {
+  align-items: flex-end;
 }

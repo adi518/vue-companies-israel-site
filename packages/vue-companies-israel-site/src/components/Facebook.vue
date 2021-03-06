@@ -20,7 +20,14 @@ const props = defineProps({
     type: Number,
     default: 32,
   },
+  unit: {
+    type: String,
+    default: "rem",
+  },
 });
 
-const style = computed(() => ({ width: props.size, height: props.size }));
+const style = computed(() => ({
+  width: props.size + props.unit,
+  height: props.size + props.unit,
+}));
 </script>

@@ -45,8 +45,10 @@
     </p>
   </Container>
   <Container content>
-    <Heading level="3" href="#contributing">Explore Awesome Resources</Heading>
-    <p></p>
+    <Heading level="3" href="#explore-resources">Explore Resources</Heading>
+    <p>Coming soon.</p>
+    <Heading level="3" href="#made-by">Made by</Heading>
+    <Contributors owner="JonathanDn" repository="vue-companies-israel" />
     <Heading level="3" href="#contributing">Contributing</Heading>
     <p>
       If your company is currently working with
@@ -57,25 +59,10 @@
       to add it to the table above. If it's also currently recruiting, make sure
       to check the <b>Recruiting</b> column.
     </p>
-    <Heading level="3" href="#contributing">Community Channels</Heading>
-    <p>You can find community members on the following channels.</p>
-    <ul class="community-channels">
-      <li>
-        <a href="https://www.facebook.com/groups/1062801280495598">
-          <Facebook color="var(--color-grey)" />
-        </a>
-      </li>
-      <li>
-        <a href="https://twitter.com/vuejsisrael">
-          <Twitter />
-        </a>
-      </li>
-      <li>
-        <a href="https://discord.gg/vue">
-          <Discord />
-        </a>
-      </li>
-    </ul>
+    <Heading level="3" href="#links">Community</Heading>
+    <Community />
+    <Heading level="3" href="#links">Links</Heading>
+    <Links />
   </Container>
   <Footer />
   <ScrollToTop />
@@ -94,18 +81,17 @@ import "./css/global.scss";
 
 import Table from "./components/Table.vue";
 import Small from "./components/Small.vue";
+import Links from "./components/Links.vue";
 import Header from "./components/Header.vue";
 import Social from "./components/Social.vue";
-import Discord from "./components/Discord.vue";
-import Facebook from "./components/Facebook.vue";
-import Twitter from "./components/Twitter.vue";
 import Toggle from "./components/Toggle.vue";
 import Footer from "./components/Footer.vue";
 import Search from "./components/Search.vue";
 import Heading from "./components/Heading.vue";
 import Container from "./components/Container.vue";
+import Community from "./components/Community.vue";
 import ScrollToTop from "./components/ScrollToTop.vue";
-import GitHubStars from "./components/GitHubStars.vue";
+import Contributors from "./components/Contributors.vue";
 import GitHubAnchor from "./components/GitHubAnchor.vue";
 import Nav, { getNavHeight } from "./components/Nav.vue";
 import ScrollToAnchorCreator from "./components/ScrollToAnchor";
@@ -140,16 +126,5 @@ const onTableReady = ({ length }) => (companies.value = length);
 
 .github-anchor {
   margin-left: auto;
-}
-
-.community-channels {
-  padding-left: 0;
-  grid-gap: 16rem;
-  display: inline-grid;
-  grid-auto-flow: column;
-
-  li {
-    list-style-type: none;
-  }
 }
 </style>
