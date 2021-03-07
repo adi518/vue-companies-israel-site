@@ -7,6 +7,7 @@
 - [x] Add error handling
 - [x] Add Google Analytics
 - [x] Sticky table headers
+- [x] Add explore resources
 - [x] Implement table search
 - [x] Add table last updated
 - [x] Add community channels

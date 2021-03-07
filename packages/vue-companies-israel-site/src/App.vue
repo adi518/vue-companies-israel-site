@@ -46,8 +46,38 @@
   </Container>
   <Container content>
     <Heading level="3" href="#explore-resources">Explore Resources</Heading>
-    <!-- udemy vue course, vue-mastery, vue-awesome, made with vue.js, daily.dev -->
-    <p>Coming soon.</p>
+    <Swiper :space-between="16" :breakpoints="swiperBreakpoints">
+      <SwiperSlide>
+        <a href="https://madewithvuejs.com/">
+          <Slide src="resources/made-with-vuejs.png" />
+        </a>
+      </SwiperSlide>
+      <SwiperSlide>
+        <a href="https://github.com/vuejs/awesome-vue">
+          <Slide src="resources/awesome-vue.svg" />
+        </a>
+      </SwiperSlide>
+      <SwiperSlide>
+        <a href="https://www.vuemastery.com/">
+          <Slide src="resources/vue-mastery.svg" />
+        </a>
+      </SwiperSlide>
+      <SwiperSlide>
+        <a href="https://daily.dev/">
+          <Slide src="resources/daily-dev.png" />
+        </a>
+      </SwiperSlide>
+      <SwiperSlide>
+        <a href="https://www.udemy.com/course/vuejs-2-the-complete-guide/">
+          <Slide src="resources/udemy.svg" />
+        </a>
+      </SwiperSlide>
+      <SwiperSlide>
+        <a href="https://www.vuemastery.com/pdf/Vue-3-Cheat-Sheet.pdf">
+          <Slide cover src="resources/vue-composition-api-cheatsheet.png" />
+        </a>
+      </SwiperSlide>
+    </Swiper>
     <Heading level="3" href="#made-by">Made by</Heading>
     <Contributors owner="JonathanDn" repository="vue-companies-israel" />
     <Heading level="3" href="#contributing">Contributing</Heading>
@@ -81,8 +111,13 @@
 import "./styles/global.scss";
 
 import Table from "./components/Table.vue";
+import Slide from "./components/Slide.vue";
 import Links from "./components/Links.vue";
 import Search from "./components/Search.vue";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from "swiper";
+
+SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);
 
 import {
   getNavHeight,
@@ -99,11 +134,22 @@ const keyword = ref("");
 const companies = ref(null);
 const toggleDarkMode = ref(true);
 
+const swiperBreakpoints = {
+  0: {
+    slidesPerView: 3,
+  },
+  991.98: {
+    slidesPerView: 6,
+  },
+};
+
 const onSearch = (event) => (keyword.value = event.target.value);
 const onTableReady = ({ length }) => (companies.value = length);
 </script>
 
 <style lang="scss">
+@import "swiper/swiper-bundle.min.css";
+
 #app {
   min-width: 320px;
   background-color: var(--color-secondary);
