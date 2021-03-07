@@ -78,6 +78,7 @@
         </a>
       </SwiperSlide>
     </Swiper>
+    <!-- <Heading level="3" href="#made-by">Upcoming Meetups</Heading> -->
     <Heading level="3" href="#made-by">Made by</Heading>
     <Contributors owner="JonathanDn" repository="vue-companies-israel" />
     <Heading level="3" href="#contributing">Contributing</Heading>
@@ -110,6 +111,9 @@
 
 import "./styles/global.scss";
 
+import axios from "axios";
+import { reactive, onMounted } from "vue";
+
 import Table from "./components/Table.vue";
 import Slide from "./components/Slide.vue";
 import Links from "./components/Links.vue";
@@ -133,6 +137,7 @@ import { ref } from "vue";
 const keyword = ref("");
 const companies = ref(null);
 const toggleDarkMode = ref(true);
+const meetups = reactive({ value: [] });
 
 const swiperBreakpoints = {
   0: {
@@ -143,8 +148,19 @@ const swiperBreakpoints = {
   },
 };
 
+const meetupsUrl =
+  "https://api.meetup.com/find/groups?radius=1&category=253&order=members";
+
+const getMeetups = () => axios.get(meetupsUrl);
+
 const onSearch = (event) => (keyword.value = event.target.value);
 const onTableReady = ({ length }) => (companies.value = length);
+
+onMounted(async () => {
+  // const { data: meetups } = await getMeetups();
+  // meetups.value = meetups;
+  // console.log(meetups);
+});
 </script>
 
 <style lang="scss">

@@ -1,5 +1,6 @@
 - [ ] Favicon
 - [ ] Light mode
+- [ ] Add meetups slider
 - [ ] Add search matches highlight
 - [x] Meta tags
 - [x] Scroll to top
