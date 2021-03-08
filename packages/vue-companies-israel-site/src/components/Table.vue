@@ -1,5 +1,6 @@
 <template>
   <!-- https://stackoverflow.com/questions/1071927/how-can-i-force-overflow-hidden-to-not-use-up-my-padding-right-space -->
+  <Search @input="onSearch" />
   <div ref="root" class="table">
     <div class="scroll-container">
       <table>
@@ -27,7 +28,10 @@
               :key="index"
             ></td>
           </tr>
-          <tr class="no-results" v-if="keyword && state.rows.length === 0">
+          <tr
+            class="no-results"
+            v-if="state.keyword && state.rows.length === 0"
+          >
             <td :colspan="state.head.length">Nope, can't find that. 😪</td>
           </tr>
           <tr class="error" v-if="state.error">
@@ -60,12 +64,13 @@ import {
   createErrorHandler,
 } from "../utils";
 
+import Search from "./Search.vue";
+
 const readmeUrl =
   "https://raw.githubusercontent.com/JonathanDn/vue-companies-israel/main/README.md";
 
 export default {
   emits: ["ready"],
-  props: { keyword: { type: String } },
   setup(props, { emit }) {
     const root = ref(null);
     const scrollContainer = ref(null);
@@ -74,6 +79,7 @@ export default {
       head: [],
       rows: [],
       index: [],
+      keyword: "",
       lastUpdated: "",
       sortColumn: null,
       ascending: false,
@@ -136,18 +142,20 @@ export default {
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
     const filter = (keyword) => {
       const matched = new Set();
-      state.index.forEach(([value, row]) => {
-        if (value.match(new RegExp(keyword))) {
-          matched.add(row);
-        }
-      });
+      const regExp = new RegExp(keyword);
+      state.index.forEach(([value, row]) =>
+        value.match(regExp) ? matched.add(row) : null
+      );
       return Array.from(matched);
     };
 
-    watch(
-      () => props.keyword,
-      (keyword) => (state.rows = filter(keyword))
-    );
+    const onSearch = (event) => {
+      const keyword = event.target.value;
+      state.keyword = keyword;
+      state.rows = filter(keyword);
+    };
+
+    const tdStyle = computed(() => ({ width: `${100 / state.head.length}%` }));
 
     onMounted(async () => {
       const { table, date, error } = await getTable().catch(handleError);
@@ -163,13 +171,13 @@ export default {
       }
     });
 
-    const tdStyle = computed(() => ({ width: `${100 / state.head.length}%` }));
-
     return {
       root,
       state,
+      Search,
       getRef,
       tdStyle,
+      onSearch,
       sortTable,
       getDisplayDate,
       scrollContainer,

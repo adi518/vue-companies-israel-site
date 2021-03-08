@@ -64,14 +64,14 @@ function mapCol(col) {
   };
 }
 
-const DAY_MS = 8.64e7;
+const HALF_DAY_MS = 4.32e7;
 
 function getStorageKey(key) {
   return `${packageJson.name}-${key}`;
 }
 
 // https://www.sohamkamani.com/blog/javascript-localstorage-with-ttl-expiry/
-export function setLocalStorage(keyCopy, value, ttl = DAY_MS) {
+export function setLocalStorage(keyCopy, value, ttl = HALF_DAY_MS) {
   const key = getStorageKey(keyCopy);
   const now = new Date();
   const date = now.getTime();
@@ -129,10 +129,10 @@ export function flattenRoutes(routes, level = 0, parent = {}) {
 
 export function getDisplayDate(timestamp) {
   const date = new Date(timestamp);
+  const day = date.getDate();
   const year = date.getFullYear();
   const month = date.toLocaleString("default", { month: "long" });
-  const days = new Date(year, date.getMonth(), 0).getDate();
-  return `${month} ${days}, ${year}`;
+  return `${month} ${day}, ${year}`;
 }
 
 export function createErrorHandler(callback) {

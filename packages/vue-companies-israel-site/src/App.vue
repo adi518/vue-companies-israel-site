@@ -34,8 +34,7 @@
     </p>
   </Container>
   <Container content id="get-started">
-    <Search @input="onSearch" />
-    <Table :keyword="keyword" @ready="onTableReady" />
+    <Table @ready="onTableReady" />
     <p>
       <Small>
         * Table does NOT contain freelancers, consultancies, software
@@ -117,7 +116,6 @@ import { reactive, onMounted } from "vue";
 import Table from "./components/Table.vue";
 import Slide from "./components/Slide.vue";
 import Links from "./components/Links.vue";
-import Search from "./components/Search.vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from "swiper";
 
@@ -134,7 +132,6 @@ const ScrollToAnchor = ScrollToAnchorCreator(null, {
 
 import { ref } from "vue";
 
-const keyword = ref("");
 const companies = ref(null);
 const toggleDarkMode = ref(true);
 const meetups = reactive({ value: [] });
@@ -153,7 +150,6 @@ const meetupsUrl =
 
 const getMeetups = () => axios.get(meetupsUrl);
 
-const onSearch = (event) => (keyword.value = event.target.value);
 const onTableReady = ({ length }) => (companies.value = length);
 
 onMounted(async () => {
