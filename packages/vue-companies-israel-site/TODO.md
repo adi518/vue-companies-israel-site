@@ -1,18 +1,24 @@
-- [ ] Favicon
-- [ ] Light mode
-- [ ] Add meetups slider
+- [ ] Implement Light mode
+- [ ] Remove commented lines
+- [x] Make table headers sticky
+- [ ] Make scroll to anchor on-load optional
+- [ ] Add fuzzy search
 - [ ] Add search matches highlight
-- [x] Meta tags
-- [x] Scroll to top
-- [x] Sticky navbar
+- [ ] ~~Add meetups slider~~ (api is not free anymore 😢)
+- [x] Add Meta tags
+- [x] Add table search
+- [x] Add Scroll to top
+- [x] Add Sticky navbar
 - [x] Add error handling
 - [x] Add Google Analytics
-- [x] Sticky table headers
 - [x] Add explore resources
-- [x] Implement table search
-- [x] Add table last updated
 - [x] Add community channels
+- [x] Add table last updated
 - [x] Add contributors component
 - [x] Fix nav children style when sticky
-- [x] Prevent table default scroll behavior
+- [ ] ~~Prevent table default scroll behavior~~
+- [ ] Replace favicon
+- [ ] Consume `flattenRoutes` as a dependency
+- [ ] Sync `.src/vue-components-next` with `vue-components`
+- [ ] Find the equivalent of react clone children for nav component
 - [x] Replace readme import with fetch (removes maintenance overhead)
