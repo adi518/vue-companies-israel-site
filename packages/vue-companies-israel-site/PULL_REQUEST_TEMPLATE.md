@@ -2,10 +2,10 @@
 
 ## Type of change
 
-- [ ] 💔 Breaking change <sub><sup>(major version - feature or fix that will break backwards-compatibility)</sup></sub>
-- [ ] 🆕 New feature <sub><sup>(minor version - adds functionality)</sup></sub>
-- [ ] 🐛 Bug fix <sub><sup>(patch version - fixes an issue)</sup></sub>
-- [ ] ➕ Dependency change <sub><sup>(updated / downgraded / added / removed)</sup></sub>
-- [ ] 🔨 Maintenance <sub><sup>(refactoring / cleanup)</sup></sub>
+- [ ] 💔 Breaking change <small>(**major version** - feature or fix that will break backwards-compatibility)</small>
+- [ ] 🆕 New feature <small>(**minor version** - adds functionality)</small>
+- [ ] 🐛 Bug fix <small>(**patch version** - fixes an issue)</small>
+- [ ] ➕ Dependency change <small>(updated/downgraded/added/removed)</small>
+- [ ] 🔨 Maintenance <small>(refactoring/cleanup)</small>
 - [ ] 🔧 Tooling change
 - [ ] 📖 Documentation update needed
