@@ -1,7 +1,7 @@
 <template>
   <!-- https://stackoverflow.com/questions/1071927/how-can-i-force-overflow-hidden-to-not-use-up-my-padding-right-space -->
   <Search @input="onSearch" />
-  <div ref="root" class="table">
+  <div class="table">
     <div class="scroll-container">
       <table>
         <thead>
@@ -52,7 +52,7 @@
 <script>
 import axios from "axios";
 import marked from "marked";
-import { ref, watch, reactive, computed, onMounted } from "vue";
+import { reactive, computed, onMounted } from "vue";
 
 import {
   parseTable,
@@ -72,9 +72,6 @@ const readmeUrl =
 export default {
   emits: ["ready"],
   setup(props, { emit }) {
-    const root = ref(null);
-    const scrollContainer = ref(null);
-
     const state = reactive({
       head: [],
       rows: [],
@@ -84,8 +81,6 @@ export default {
       sortColumn: null,
       ascending: false,
     });
-
-    const getRef = () => root.value;
 
     const handleError = createErrorHandler((error) => (state.error = error));
 
@@ -137,10 +132,7 @@ export default {
     const sortByIndex = (index, opts) =>
       sortTable(state.head[index].innerText, opts);
 
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
-    const filter = (keyword) => {
+    const filterTable = (keyword) => {
       const matched = new Set();
       const regExp = new RegExp(keyword);
       state.index.forEach(([value, row]) =>
@@ -152,7 +144,7 @@ export default {
     const onSearch = (event) => {
       const keyword = event.target.value;
       state.keyword = keyword;
-      state.rows = filter(keyword);
+      state.rows = filterTable(keyword);
     };
 
     const tdStyle = computed(() => ({ width: `${100 / state.head.length}%` }));
@@ -172,15 +164,12 @@ export default {
     });
 
     return {
-      root,
       state,
       Search,
-      getRef,
       tdStyle,
       onSearch,
       sortTable,
       getDisplayDate,
-      scrollContainer,
     };
   },
 };
