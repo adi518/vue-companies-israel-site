@@ -42,7 +42,7 @@ export default {
 
 .nav {
   width: 100%;
-  z-index: 1; // ensure always on top
+  z-index: 2; // ensure always on top
   display: flex;
   padding: 16rem;
   position: fixed; // ensure always on top
