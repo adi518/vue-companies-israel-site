@@ -30,14 +30,6 @@ export function parseTable(table) {
   );
 }
 
-export function getTableIndex(table) {
-  return table
-    .map((row) =>
-      Object.entries(row).map(([, col]) => [col.innerTextLowerCase, row])
-    )
-    .flat();
-}
-
 function getTableHeadChildren(table) {
   return Array.from(table.tHead.rows[0].children);
 }
@@ -143,7 +135,7 @@ export function createErrorHandler(callback) {
   };
 }
 
-export function createElement(html) {
+export function createTemplateElement(html) {
   return new Promise((resolve) => {
     const element = document.createElement("template");
     element.innerHTML = html;

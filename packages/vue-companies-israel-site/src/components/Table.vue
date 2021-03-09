@@ -56,12 +56,11 @@ import { reactive, computed, onMounted } from "vue";
 
 import {
   parseTable,
-  createElement,
-  getTableIndex,
   getDisplayDate,
   setLocalStorage,
   getLocalStorage,
   createErrorHandler,
+  createTemplateElement,
 } from "../utils";
 
 import Search from "./Search.vue";
@@ -97,14 +96,21 @@ export default {
             resolve({ error });
           } else {
             const html = marked(readme);
-            const fragment = await createElement(html);
-            const element = fragment.querySelector("table");
+            const template = await createTemplateElement(html);
+            const element = template.querySelector("table");
             const table = parseTable(element);
             const date = setLocalStorage("table", table);
             resolve({ table, date });
           }
         }
       });
+
+    const getTableIndex = (table) =>
+      table
+        .map((row) =>
+          Object.entries(row).map(([, col]) => [col.innerTextLowerCase, row])
+        )
+        .flat();
 
     const sortTable = (col, { ascending = true } = {}) => {
       if (state.sortColumn === col) {

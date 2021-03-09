@@ -112,19 +112,19 @@ import "./styles/global.scss";
 
 import axios from "axios";
 import { reactive, onMounted } from "vue";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from "swiper";
 
 import Table from "./components/Table.vue";
 import Slide from "./components/Slide.vue";
 import Links from "./components/Links.vue";
-import { Swiper, SwiperSlide } from "swiper/vue";
-import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from "swiper";
-
-SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);
 
 import {
   getNavHeight,
   ScrollToAnchor as ScrollToAnchorCreator,
 } from "./vue-components-next";
+
+SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);
 
 const ScrollToAnchor = ScrollToAnchorCreator(null, {
   offsetY: getNavHeight,
