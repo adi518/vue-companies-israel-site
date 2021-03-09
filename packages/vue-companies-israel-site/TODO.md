@@ -1,24 +1,24 @@
-- [ ] Implement Light mode
-- [ ] Remove commented lines
-- [x] Make table headers sticky
-- [ ] Make scroll to anchor on-load optional
-- [ ] Add fuzzy search
-- [ ] Add search matches highlight
-- [ ] ~~Add meetups slider~~ (api is not free anymore 😢)
-- [x] Add Meta tags
-- [x] Add table search
-- [x] Add Scroll to top
-- [x] Add Sticky navbar
-- [x] Add error handling
-- [x] Add Google Analytics
-- [x] Add explore resources
-- [x] Add community channels
-- [x] Add table last updated
-- [x] Add contributors component
-- [x] Fix nav children style when sticky
-- [ ] ~~Prevent table default scroll behavior~~
-- [ ] Replace favicon
-- [ ] Consume `flattenRoutes` as a dependency
-- [ ] Sync `.src/vue-components-next` with `vue-components`
-- [ ] Find the equivalent of react clone children for nav component
-- [x] Replace readme import with fetch (removes maintenance overhead)
+- [ ] implement light mode
+- [ ] remove commented lines
+- [x] make table headers sticky
+- [x] make scroll to anchor on-load optional
+- [x] add fuzzy search
+- [ ] add search matches highlight
+- [ ] ~~add meetups slider~~ (api is not free anymore 😢)
+- [x] add meta tags
+- [x] add table search
+- [x] add scroll to top
+- [x] add sticky navbar
+- [x] add error handling
+- [x] add google analytics
+- [x] add explore resources
+- [x] add community channels
+- [x] add table last updated
+- [x] add contributors component
+- [x] fix nav children style when sticky
+- [ ] ~~prevent table default scroll behavior~~
+- [ ] replace favicon
+- [ ] consume `flattenRoutes` as a dependency
+- [ ] sync `.src/vue-components-next` with `vue-components`
+- [ ] find the equivalent of react clone children for nav component
+- [x] replace readme import with fetch (removes maintenance overhead)

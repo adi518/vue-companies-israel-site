@@ -16,10 +16,7 @@ function scrollTo(offset, callback = () => {}) {
   };
   window.addEventListener("scroll", onScroll);
   onScroll();
-  window.scrollTo({
-    top: offset,
-    behavior: "smooth",
-  });
+  window.scrollTo({ top: offset, behavior: "smooth" });
 }
 
 const beforeEach = (to, from, next) => {
@@ -27,14 +24,14 @@ const beforeEach = (to, from, next) => {
   next({ path: `${from.path}?a=${to.path.substr(1)}` });
 };
 
-const ScrollToAnchor = (
+export const ScrollToAnchor = (
   router,
-  { offsetY = async () => 0, offsetMultiplier = 2 } = {}
+  { offsetY = async () => 0, offsetMultiplier = 2, onLoad = false } = {}
 ) => {
   if (ScrollToAnchor.Component) return ScrollToAnchor.Component;
   const paths = [];
   if (router) {
-    paths.concat(getPaths(router));
+    paths.push(...getPaths(router));
     router.beforeEach(beforeEach);
   }
   if (offsetMultiplier) {
@@ -58,7 +55,7 @@ const ScrollToAnchor = (
     },
     methods: {
       async scrollToLocalAnchor() {
-        if (!this.isMounted) return;
+        if (!this.isMounted || !onLoad) return;
         // https://stackoverflow.com/a/901144/4106263
         // https://stackoverflow.com/a/11662717/4106263
         // https://stackoverflow.com/a/56895999/4106263
@@ -105,10 +102,15 @@ const scrollToAnchor = (anchorElOrId, offsetY = () => 0) => {
   });
 };
 
+const hashRegExp = /^#/;
+
 class GlobalAnchorClickListener {
   static createClickHandler = (paths, offsetY = () => 0) => async (event) => {
     const anchorEl = event.target.closest("a") || event.target;
-    if (!(anchorEl instanceof HTMLAnchorElement) || !/^#/.test(anchorEl.hash)) {
+    if (
+      !(anchorEl instanceof HTMLAnchorElement) ||
+      !hashRegExp.test(anchorEl.hash)
+    ) {
       return;
     }
     const path = anchorEl.hash?.substr(1);

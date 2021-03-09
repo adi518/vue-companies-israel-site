@@ -35,7 +35,9 @@ function getTableHeadChildren(table) {
 }
 
 function mapHeaders(table) {
-  return getTableHeadChildren(table).map((col) => mapCol(col).innerText);
+  return getTableHeadChildren(table).map((col) =>
+    mapCol(col).innerText.toLowerCase()
+  );
 }
 
 function mapRow(headers, row) {

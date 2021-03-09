@@ -7,13 +7,13 @@
         <thead>
           <tr>
             <th
-              v-for="(col, index) in state.head"
+              v-for="(header, index) in state.headers"
               :key="index"
               :style="tdStyle"
-              @click="sortTable(col.innerText)"
+              @click="sortTable(header.innerText)"
             >
-              {{ col.innerText }}
-              <span v-if="col.innerText === state.sortColumn">
+              {{ header.innerText }}
+              <span v-if="header.innerText === state.sortColumn">
                 {{ state.ascending ? "↑" : "↓" }}
               </span>
             </th>
@@ -32,10 +32,10 @@
             class="no-results"
             v-if="state.keyword && state.rows.length === 0"
           >
-            <td :colspan="state.head.length">Nope, can't find that. 😪</td>
+            <td :colspan="state.headers.length">Nope, can't find that. 😪</td>
           </tr>
           <tr class="error" v-if="state.error">
-            <td :colspan="state.head.length">
+            <td :colspan="state.headers.length">
               An error has occurred while retrieving the table.
               <a href="/">Try again?</a> 🥵
             </td>
@@ -51,6 +51,7 @@
 
 <script>
 import axios from "axios";
+import Fuse from "fuse.js";
 import marked from "marked";
 import { reactive, computed, onMounted } from "vue";
 
@@ -72,9 +73,10 @@ export default {
   emits: ["ready"],
   setup(props, { emit }) {
     const state = reactive({
-      head: [],
+      fuse: {},
       rows: [],
-      index: [],
+      headers: [],
+      allRows: [],
       keyword: "",
       lastUpdated: "",
       sortColumn: null,
@@ -105,14 +107,18 @@ export default {
         }
       });
 
-    const getTableIndex = (table) =>
+    const flattenTable = (table) =>
       table
         .map((row) =>
-          Object.entries(row).map(([, col]) => [col.innerTextLowerCase, row])
+          Object.entries(row).map(([, col]) => ({
+            value: col.innerTextLowerCase,
+            row,
+          }))
         )
         .flat();
 
-    const sortTable = (col, { ascending = true } = {}) => {
+    const sortTable = (colCopy, { ascending = true } = {}) => {
+      const col = colCopy.toLowerCase();
       if (state.sortColumn === col) {
         state.ascending = !state.ascending;
       } else {
@@ -136,16 +142,18 @@ export default {
     };
 
     const sortByIndex = (index, opts) =>
-      sortTable(state.head[index].innerText, opts);
+      sortTable(state.headers[index].innerText, opts);
 
-    const filterTable = (keyword) => {
-      const matched = new Set();
-      const regExp = new RegExp(keyword);
-      state.index.forEach(([value, row]) =>
-        value.match(regExp) ? matched.add(row) : null
-      );
-      return Array.from(matched);
-    };
+    // https://fusejs.io/
+    // https://github.com/krisk/Fuse/issues/229
+    const filterTable = (keyword) =>
+      keyword
+        ? new Set(
+            state.fuse
+              .search(keyword)
+              .map(({ item, row }) => (row ? row : item.row))
+          )
+        : state.allRows;
 
     const onSearch = (event) => {
       const keyword = event.target.value;
@@ -153,20 +161,25 @@ export default {
       state.rows = filterTable(keyword);
     };
 
-    const tdStyle = computed(() => ({ width: `${100 / state.head.length}%` }));
+    const tdStyle = computed(() => ({
+      width: `${100 / state.headers.length}%`,
+    }));
 
     onMounted(async () => {
       const { table, date, error } = await getTable().catch(handleError);
 
-      if (!error) {
-        state.index = getTableIndex(table.tbody);
-        state.head = table.thead;
-        state.rows = table.tbody;
-        state.lastUpdated = date;
+      if (error instanceof Error) return;
 
-        sortByIndex(1, { ascending: false });
-        emit("ready", { length: state.rows.length });
-      }
+      const tableIndex = flattenTable(table.tbody);
+
+      state.fuse = new Fuse(tableIndex, { keys: ["value"] });
+      state.allRows = table.tbody;
+      state.headers = table.thead;
+      state.rows = table.tbody;
+      state.lastUpdated = date;
+
+      sortByIndex(1, { ascending: false });
+      emit("ready", { length: state.rows.length });
     });
 
     return {

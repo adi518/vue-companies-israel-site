@@ -63,7 +63,7 @@
       </SwiperSlide>
       <SwiperSlide>
         <a href="https://daily.dev/">
-          <Slide src="resources/daily-dev.png" />
+          <Slide src="resources/daily-dev.svg" />
         </a>
       </SwiperSlide>
       <SwiperSlide>

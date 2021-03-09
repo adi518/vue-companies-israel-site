@@ -50,11 +50,6 @@ export default {
   background-size: 200% 200%;
   background-color: transparent;
   transition: background-color var(--transition-duration);
-  // background-image: linear-gradient(
-  //   180deg,
-  //   rgba($color-secondary, 0.85),
-  //   var(--color-primary)
-  // );
 
   &.is-sticky {
     background-color: var(--color-primary);
