@@ -1,6 +1,6 @@
 <template>
   <!-- https://stackoverflow.com/questions/1071927/how-can-i-force-overflow-hidden-to-not-use-up-my-padding-right-space -->
-  <Search @input="onSearch" />
+  <Search @input="onSearch" :disabled="state.error" />
   <div class="table">
     <div class="scroll-container">
       <table>
@@ -10,12 +10,15 @@
               v-for="(header, index) in state.headers"
               :key="index"
               :style="tdStyle"
-              @click="sortTable(header.innerText)"
+              @click="sortTable(header.value)"
             >
               {{ header.innerText }}
-              <span v-if="header.innerText === state.sortColumn">
+              <span v-if="header.value === state.sortColumn">
                 {{ state.ascending ? "↑" : "↓" }}
               </span>
+              <!-- <span class="filter" v-if="header.value !== state.sortColumn">
+                <Filter />
+              </span> -->
             </th>
           </tr>
         </thead>
@@ -43,8 +46,11 @@
         </tbody>
       </table>
     </div>
-    <div v-if="state.lastUpdated" class="last-updated">
-      <Small>Last updated: {{ getDisplayDate(state.lastUpdated) }}</Small>
+    <div style="display: flex; align-items: center; padding-top: 16rem">
+      <Loader size="24rem" v-if="state.isFetching" />
+      <div v-if="state.lastUpdated" class="last-updated">
+        <Small>Last updated: {{ getDisplayDate(state.lastUpdated) }}</Small>
+      </div>
     </div>
   </div>
 </template>
@@ -57,17 +63,34 @@ import { reactive, computed, onMounted } from "vue";
 
 import {
   parseTable,
+  createAsync,
+  TableCellTags,
   getDisplayDate,
   setLocalStorage,
   getLocalStorage,
+  getHighlightHTML,
   createErrorHandler,
   createTemplateElement,
+  capitalizeFirstLetter,
 } from "../utils";
 
 import Search from "./Search.vue";
+import Filter from "./Filter.vue";
+
+import Loader from "../vue-components-next/Loader.vue";
+
+import { merge } from "lodash";
 
 const readmeUrl =
   "https://raw.githubusercontent.com/JonathanDn/vue-companies-israel/main/README.md";
+
+const Columns = {
+  Recruiting: {
+    value: "recruiting devs",
+    replaceValue: "recruiting",
+    values: { unchecked: "❌" },
+  },
+};
 
 export default {
   emits: ["ready"],
@@ -75,47 +98,58 @@ export default {
     const state = reactive({
       fuse: {},
       rows: [],
+      search: [],
       headers: [],
       allRows: [],
       keyword: "",
       lastUpdated: "",
       sortColumn: null,
+      isFetching: false,
       ascending: false,
     });
 
     const handleError = createErrorHandler((error) => (state.error = error));
 
+    const async = createAsync(
+      (isFetching) => (state.isFetching = isFetching),
+      handleError,
+      { delay: 500 }
+    );
+
     const getReadme = async () => await axios.get(readmeUrl).catch(handleError);
 
-    const getTable = () =>
+    const getTable = (onColumn) =>
       new Promise(async (resolve) => {
         const table = getLocalStorage("table");
         if (table) {
           resolve({ table: table.value, date: table.date });
         } else {
-          const { error, data: readme } = await getReadme();
+          const { error, data: readme } = await async(getReadme);
           if (error) {
             resolve({ error });
           } else {
             const html = marked(readme);
             const template = await createTemplateElement(html);
             const element = template.querySelector("table");
-            const table = parseTable(element);
+            const table = parseTable(element, onColumn);
             const date = setLocalStorage("table", table);
-            resolve({ table, date });
+            resolve({ table, date: Date.now() });
           }
         }
       });
 
-    const flattenTable = (table) =>
-      table
+    const flattenTable = (table) => {
+      return table
         .map((row) =>
           Object.entries(row).map(([, col]) => ({
-            value: col.innerTextLowerCase,
+            innerText: col.innerText,
+            value: col.value,
+            column: col,
             row,
           }))
         )
         .flat();
+    };
 
     const sortTable = (colCopy, { ascending = true } = {}) => {
       const col = colCopy.toLowerCase();
@@ -141,19 +175,41 @@ export default {
       return 0;
     };
 
-    const sortByIndex = (index, opts) =>
+    const sortByIndex = (index, opts) => {
       sortTable(state.headers[index].innerText, opts);
+    };
 
     // https://fusejs.io/
     // https://github.com/krisk/Fuse/issues/229
-    const filterTable = (keyword) =>
-      keyword
-        ? new Set(
-            state.fuse
-              .search(keyword)
-              .map(({ item, row }) => (row ? row : item.row))
-          )
+    const filterTable = (keyword) => {
+      const rows = state.fuse.search(keyword);
+      state.search = rows;
+      return keyword
+        ? [
+            ...new Set(
+              rows.map(
+                ({
+                  item: { row, column: col, innerText },
+                  matches,
+                  matches: [match],
+                }) => {
+                  // `matches` is an array corresponding to the matched value column,
+                  // we then highlight the column value via an array of indices,
+                  // because a string can match multiple ranges of characters.
+                  if (matches.length) {
+                    col.innerHTML = getHighlightHTML(
+                      col.innerText,
+                      match.indices,
+                      { className: "" }
+                    );
+                  }
+                  return row;
+                }
+              )
+            ),
+          ]
         : state.allRows;
+    };
 
     const onSearch = (event) => {
       const keyword = event.target.value;
@@ -165,18 +221,42 @@ export default {
       width: `${100 / state.headers.length}%`,
     }));
 
+    const onColumn = (col) => {
+      if (
+        col.tagName === TableCellTags.Th &&
+        col.value === Columns.Recruiting.value
+      ) {
+        const value = Columns.Recruiting.replaceValue;
+        return { ...col, value, innerText: capitalizeFirstLetter(value) };
+      } else if (col.header === Columns.Recruiting.replaceValue && !col.value) {
+        const value = Columns.Recruiting.values.unchecked;
+        return { ...col, value: value.toLowerCase(), innerHTML: value };
+      }
+      return col;
+    };
+
     onMounted(async () => {
-      const { table, date, error } = await getTable().catch(handleError);
+      const { table, date, error } = await getTable(onColumn).catch(
+        handleError
+      );
 
-      if (error instanceof Error) return;
+      if (error) return;
 
-      const tableIndex = flattenTable(table.tbody);
+      const tableHead = table.thead;
+      const tableBody = table.tbody;
+      const flatTable = flattenTable(tableBody);
 
-      state.fuse = new Fuse(tableIndex, { keys: ["value"] });
-      state.allRows = table.tbody;
-      state.headers = table.thead;
-      state.rows = table.tbody;
+      state.fuse = new Fuse(flatTable, {
+        keys: ["value"],
+        includeMatches: true,
+        minMatchCharLength: 2,
+      });
+
       state.lastUpdated = date;
+
+      state.rows = tableBody;
+      state.headers = tableHead;
+      state.allRows = merge([], tableBody);
 
       sortByIndex(1, { ascending: false });
       emit("ready", { length: state.rows.length });
@@ -185,6 +265,7 @@ export default {
     return {
       state,
       Search,
+      Filter,
       tdStyle,
       onSearch,
       sortTable,
@@ -236,6 +317,11 @@ $background-color: darken($color-secondary, 3.75%);
   }
 }
 
+.filter {
+  opacity: 0;
+  transition: opacity var(--transition-duration);
+}
+
 .no-results {
   &:hover {
     color: currentColor;
@@ -253,8 +339,7 @@ $background-color: darken($color-secondary, 3.75%);
 }
 
 .last-updated {
-  padding-top: 8rem;
-  text-align: right;
+  margin-left: auto;
 }
 
 table {
@@ -288,6 +373,14 @@ th {
 
   &:hover {
     color: var(--color-hover);
+
+    .filter {
+      opacity: 1;
+
+      path {
+        color: var(--color-hover);
+      }
+    }
   }
 }
 

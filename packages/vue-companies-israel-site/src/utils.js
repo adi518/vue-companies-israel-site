@@ -1,18 +1,26 @@
+import { version } from "@vue/runtime-core";
+import { rMerge as mergeRanges } from "ranges-merge";
 import packageJson from "../package.json";
+import Mark from "mark.js";
+
+export const TableCellTags = {
+  Td: "td",
+  Th: "th",
+};
 
 // https://www.samanthaming.com/tidbits/49-2-ways-to-merge-arrays/#merge-array-with-push-%F0%9F%A4%94
-export function parseTable(table) {
+export function parseTable(table, onColumn = (col) => col) {
   const headers = [];
   return Array.from(table.rows).reduce(
     (parsed, row) => {
       const buffer = [];
       Array.from(row.children)
-        .map(mapCol)
-        .forEach((col, colIndex) => {
-          if (col.tagName.toLowerCase() === "th") {
+        .map((col, index) => onColumn(mapCol(col, headers[index])))
+        .forEach((col, index) => {
+          if (col.tagName === TableCellTags.Th) {
             parsed.thead.push(col);
-            if (colIndex === getTableHeadChildren(table).length - 1) {
-              headers.push(...mapHeaders(table));
+            if (index === getLastIndex(getTableHeadChildren(table))) {
+              headers.push(...parsed.thead.map((header) => header.value));
             }
           } else if (table.tHead.rows.length === 0) {
             parsed.tbody.push(col);
@@ -28,6 +36,10 @@ export function parseTable(table) {
     },
     { thead: [], tbody: [] }
   );
+}
+
+function getLastIndex(iteratable) {
+  return iteratable.length - 1;
 }
 
 function getTableHeadChildren(table) {
@@ -47,14 +59,19 @@ function mapRow(headers, row) {
   );
 }
 
-function mapCol(col) {
-  const { tagName, innerText: innerTextCopy, innerHTML } = col;
-  const innerText = innerTextCopy.trim();
+// https://stackoverflow.com/a/1981366/4106263
+const replaceSpacesRegExp = / {2,}/g;
+
+function mapCol(col, header) {
+  const { tagName: tagNameCopy, innerText: innerTextCopy, innerHTML } = col;
+  const innerText = innerTextCopy.trim().replace(replaceSpacesRegExp, " ");
+  const tagName = tagNameCopy.toLowerCase();
   return {
-    tagName: tagName.toLowerCase(),
+    ...(tagName === TableCellTags.Td && { header }),
+    value: innerText.toLowerCase(),
+    tagName,
     innerHTML,
-    innerText: innerText,
-    innerTextLowerCase: innerText.toLowerCase(),
+    innerText,
   };
 }
 
@@ -145,6 +162,65 @@ export function createTemplateElement(html) {
   });
 }
 
+// https://stackoverflow.com/a/33704783/4106263
+export function capitalizeFirstLetter(str) {
+  return str[0].toUpperCase() + str.slice(1);
+}
+
+// https://stackoverflow.com/a/43104417/4106263
+function stripHtmlToText(html) {
+  const element = document.createElement("div");
+  element.innerHTML = html;
+  const text = element.textContent || element.innerText || "";
+  return text.replace("\u200B", "").trim(); // zero width space
+}
+
+// TODO preserve HTML
+export function getHighlightHTML(
+  str,
+  ranges,
+  { className = "highlight" } = {}
+) {
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring#description
+  return (mergeRanges(ranges) || ranges)
+    .reduce((allRanges, range, index, ranges) => {
+      const [nextRangeStart] = ranges[index + 1] || [];
+      const nextStart = range[1] + 1;
+      const nextEnd = nextRangeStart - 1;
+      const nextRange = [nextStart, nextEnd || Infinity];
+      if (index === 0 && range[0] > 0) allRanges.push([0, range[0] - 1]);
+      return allRanges.concat([range.concat(true), nextRange]);
+    }, [])
+    .map(([start, endCopy, highlight], index, ranges) => {
+      const end = endCopy + 1; // normalize to avoid empty string for equal indices
+      const highlighted = str.substring(start, end);
+      // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/mark
+      if (highlight) return `<mark class="${className}">${highlighted}</mark>`;
+      return str.substring(start, end);
+    })
+    .filter(isTruthyPredicate)
+    .join("");
+}
+
+function isTruthyPredicate(value) {
+  return value;
+}
+
+export const createAsync = (setState, onError, { delay } = {}) => async (
+  asyncFn
+) => {
+  setState(true);
+  const fnPromise = await asyncFn().catch(onError);
+  const delayPromise = new Promise((resolve) => setTimeout(resolve, delay));
+  const [, result] = await Promise.all([delayPromise, fnPromise]);
+  setState(false);
+  return result;
+};
+
 export function isProduction() {
   return process.env.NODE_ENV === "production";
 }
+
+// if (index === 0 && str === "Yad2") {
+//   console.log(ranges);
+// }

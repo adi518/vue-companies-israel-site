@@ -70,8 +70,10 @@ li {
   }
 }
 
-svg {
-  display: block;
+mark {
+  border-radius: 4rem;
+  color: var(--color-body);
+  background-color: var(--color-primary2);
 }
 
 // replace with bootstrap 4 utilities

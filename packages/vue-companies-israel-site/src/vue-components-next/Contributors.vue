@@ -15,7 +15,7 @@
 // https://api.github.com/repos/JonathanDn/vue-companies-israel
 
 import axios from "axios";
-import { ref, reactive, defineProps, onMounted } from "vue";
+import { reactive, defineProps, onMounted } from "vue";
 import { createErrorHandler, setLocalStorage, getLocalStorage } from "../utils";
 
 import Error from "./Error.vue";

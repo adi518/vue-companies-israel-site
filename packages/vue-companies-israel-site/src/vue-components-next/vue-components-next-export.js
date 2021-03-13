@@ -17,3 +17,4 @@ export { default as Social } from "./Social.vue";
 export { default as Small } from "./Small.vue";
 export { default as Error } from "./Error.vue";
 export { default as Toggle } from "./Toggle.vue";
+export { default as Loader } from "./Loader.vue";
