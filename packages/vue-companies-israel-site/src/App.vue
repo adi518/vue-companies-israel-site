@@ -75,7 +75,6 @@
         </a>
       </SwiperSlide>
     </Swiper>
-    <!-- <Heading level="3" href="#made-by">Upcoming Meetups</Heading> -->
     <Heading level="3" href="#made-by">Made by</Heading>
     <Contributors owner="JonathanDn" repository="vue-companies-israel" />
     <Heading level="3" href="#contributing">Contributing</Heading>
@@ -109,8 +108,8 @@
 import "./styles/global.scss";
 
 import axios from "axios";
-import { reactive, onMounted } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
+import { reactive, onMounted, onUnmounted } from "vue";
 import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from "swiper";
 
 import Table from "./components/Table.vue";
@@ -143,17 +142,21 @@ const swiperBreakpoints = {
   },
 };
 
-const meetupsUrl =
-  "https://api.meetup.com/find/groups?radius=1&category=253&order=members";
-
-const getMeetups = () => axios.get(meetupsUrl);
-
 const onTableReady = ({ length }) => (companies.value = length);
 
-onMounted(async () => {
-  // const { data: meetups } = await getMeetups();
-  // meetups.value = meetups;
-  // console.log(meetups);
+const onKeyDown = (event) => {
+  // https://keycode.info/
+  if (event.ctrlKey && event.key === "F5") {
+    localStorage.clear();
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("keydown", onKeyDown);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("keydown", onKeyDown);
 });
 </script>
 

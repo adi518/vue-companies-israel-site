@@ -4,7 +4,7 @@
 - [ ] ~~colorize even columns~~
 - [ ] remove commented lines
 - [x] add ide-style line numbering
-- [ ] delete local-storage on ctrl+f5
+- [x] clear local-storage on hard refresh (ctrl+f5)
 - [ ] ~~prevent table default scroll behavior~~
 - [x] add preliminary search matches highlight
 - [ ] consume `flattenRoutes` as a dependency
