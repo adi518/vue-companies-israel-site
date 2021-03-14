@@ -3,10 +3,10 @@
 - [ ] implement light mode
 - [ ] ~~colorize even columns~~
 - [ ] remove commented lines
-- [ ] add search matches highlight
-- [ ] add ide-style line numbering
+- [x] add ide-style line numbering
 - [ ] delete local-storage on ctrl+f5
 - [ ] ~~prevent table default scroll behavior~~
+- [x] add preliminary search matches highlight
 - [ ] consume `flattenRoutes` as a dependency
 - [ ] ~~add meetups slider~~ (api is not free anymore 😢)
 - [ ] find the equivalent of react clone children for nav component

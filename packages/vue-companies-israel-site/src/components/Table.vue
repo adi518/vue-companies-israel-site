@@ -1,9 +1,9 @@
 <template>
   <!-- https://stackoverflow.com/questions/1071927/how-can-i-force-overflow-hidden-to-not-use-up-my-padding-right-space -->
   <Search @input="onSearch" :disabled="state.error" />
-  <div class="table">
+  <div class="table-container">
     <div class="scroll-container">
-      <table>
+      <table class="table">
         <thead>
           <tr>
             <th
@@ -280,7 +280,7 @@ export default {
 
 $background-color: darken($color-secondary, 3.75%);
 
-.table {
+.table-container {
   padding: 16rem;
   scroll-margin-top: inherit;
   border-radius: 0 0 16rem 16rem;
@@ -342,9 +342,10 @@ $background-color: darken($color-secondary, 3.75%);
   margin-left: auto;
 }
 
-table {
+.table {
   width: 100%;
   position: relative;
+  counter-reset: rowNumber;
   border-collapse: collapse;
 }
 
@@ -390,6 +391,14 @@ td {
   &:first-child {
     border-top-left-radius: 16rem;
     border-bottom-left-radius: 16rem;
+
+    &:before {
+      margin-right: 16rem;
+      font-family: Consolas;
+      content: counter(rowNumber);
+      counter-increment: rowNumber;
+      color: var(--color-secondary2);
+    }
 
     :deep(img) {
       margin-right: 1ch;
