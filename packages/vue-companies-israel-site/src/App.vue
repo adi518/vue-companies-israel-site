@@ -23,16 +23,6 @@
     </Social>
   </Nav>
   <Header :companies="companies" />
-  <Container content>
-    <Heading level="3" href="#what-is-vuejs">What is Vue.js?</Heading>
-    <p>
-      <a href="https://vuejs.org/">Vue.js</a> is an open-source
-      model–view–viewmodel front end JavaScript framework for building user
-      interfaces and single-page applications. It was created by Evan You, and
-      is maintained by him and the rest of the active core team members.
-      <a href="https://en.wikipedia.org/wiki/Vue.js">Wikipedia</a>
-    </p>
-  </Container>
   <Container content id="get-started">
     <Table @ready="onTableReady" />
     <p>
@@ -44,6 +34,14 @@
     </p>
   </Container>
   <Container content>
+    <Heading level="3" href="#what-is-vuejs">What is Vue.js?</Heading>
+    <p>
+      <a href="https://vuejs.org/">Vue.js</a> is an open-source
+      model–view–viewmodel front end JavaScript framework for building user
+      interfaces and single-page applications. It was created by Evan You, and
+      is maintained by him and the rest of the active core team members.
+      <a href="https://en.wikipedia.org/wiki/Vue.js">Wikipedia</a>
+    </p>
     <Heading level="3" href="#explore-resources">Explore Resources</Heading>
     <Swiper :space-between="16" :breakpoints="swiperBreakpoints">
       <SwiperSlide>
