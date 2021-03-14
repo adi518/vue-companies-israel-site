@@ -27,7 +27,7 @@
     <Table @ready="onTableReady" />
     <p>
       <Small>
-        * Table does NOT contain freelancers, consultancies, software
+        * Table does <b>not</b> contain freelancers, consultancies, software
         contractors or open source projects working with
         <a href="https://vuejs.org/">Vue.js</a>.
       </Small>
