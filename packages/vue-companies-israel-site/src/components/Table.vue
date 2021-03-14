@@ -356,7 +356,7 @@ tr {
 
 th,
 td {
-  min-width: 256rem;
+  min-width: 276rem;
   padding-left: 16rem;
   padding-right: 16rem;
   padding-bottom: 16rem; // pixel-perfect padding
@@ -393,9 +393,12 @@ td {
     border-bottom-left-radius: 16rem;
 
     &:before {
+      min-width: 16rem;
       margin-right: 16rem;
-      font-family: Consolas;
+      display: inline-block;
       content: counter(rowNumber);
+      text-align: right;
+      font-family: Consolas;
       counter-increment: rowNumber;
       color: var(--color-secondary2);
     }
