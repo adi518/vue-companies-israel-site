@@ -307,13 +307,13 @@ $background-color: darken($color-secondary, 3.75%);
 
   // https://css-tricks.com/almanac/properties/s/scrollbar/
   &::-webkit-scrollbar {
-    width: 6rem;
-    height: 6rem;
+    width: 8rem;
+    height: 8rem;
     background-color: var(--color-secondary);
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: var(--color-primary);
+    background-color: var(--color-secondary2);
   }
 }
 
