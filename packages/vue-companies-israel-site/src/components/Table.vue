@@ -59,16 +59,18 @@
 import axios from "axios";
 import Fuse from "fuse.js";
 import marked from "marked";
+import { merge } from "lodash";
 import { reactive, computed, onMounted } from "vue";
+import Loader from "../vue-components-next/Loader.vue";
 
 import {
   parseTable,
   createAsync,
+  highlightHTML,
   TableCellTags,
   getDisplayDate,
   setLocalStorage,
   getLocalStorage,
-  getHighlightHTML,
   createErrorHandler,
   createTemplateElement,
   capitalizeFirstLetter,
@@ -76,10 +78,6 @@ import {
 
 import Search from "./Search.vue";
 import Filter from "./Filter.vue";
-
-import Loader from "../vue-components-next/Loader.vue";
-
-import { merge } from "lodash";
 
 const readmeUrl =
   "https://raw.githubusercontent.com/JonathanDn/vue-companies-israel/main/README.md";
@@ -130,10 +128,10 @@ export default {
           } else {
             const html = marked(readme);
             const template = await createTemplateElement(html);
-            const element = template.querySelector("table");
+            const element = template.content.querySelector("table");
             const table = parseTable(element, onColumn);
             const date = setLocalStorage("table", table);
-            resolve({ table, date: Date.now() });
+            resolve({ table, date });
           }
         }
       });
@@ -142,10 +140,9 @@ export default {
       return table
         .map((row) =>
           Object.entries(row).map(([, col]) => ({
-            innerText: col.innerText,
-            value: col.value,
-            column: col,
             row,
+            column: col,
+            value: col.value,
           }))
         )
         .flat();
@@ -181,40 +178,37 @@ export default {
 
     // https://fusejs.io/
     // https://github.com/krisk/Fuse/issues/229
-    const filterTable = (keyword) => {
-      const rows = state.fuse.search(keyword);
+    const filterTable = async (keyword) => {
+      let rows = state.fuse.search(keyword);
       state.search = rows;
-      return keyword
-        ? [
-            ...new Set(
-              rows.map(
-                ({
-                  item: { row, column: col, innerText },
-                  matches,
-                  matches: [match],
-                }) => {
-                  // `matches` is an array corresponding to the matched value column,
-                  // we then highlight the column value via an array of indices,
-                  // because a string can match multiple ranges of characters.
-                  if (matches.length) {
-                    col.innerHTML = getHighlightHTML(
-                      col.innerText,
-                      match.indices,
-                      { className: "" }
-                    );
-                  }
-                  return row;
+      if (keyword) {
+        rows = rows.map(
+          async ({ item: { row, column: col }, matches, matches: [match] }) => {
+            // `matches` is an array corresponding to the matched value column,
+            // we then highlight the column value via an array of indices,
+            // because a string can match multiple ranges of characters.
+            if (matches.length) {
+              col.innerHTML = await highlightHTML(
+                col.innerHTMLCopy,
+                match.indices,
+                {
+                  className: "",
                 }
-              )
-            ),
-          ]
-        : state.allRows;
+              );
+            }
+            return row;
+          }
+        );
+        rows = await Promise.all(rows);
+        return [...new Set(rows)];
+      }
+      return state.allRows;
     };
 
-    const onSearch = (event) => {
+    const onSearch = async (event) => {
       const keyword = event.target.value;
       state.keyword = keyword;
-      state.rows = filterTable(keyword);
+      state.rows = await filterTable(keyword);
     };
 
     const tdStyle = computed(() => ({

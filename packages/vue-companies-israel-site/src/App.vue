@@ -161,6 +161,8 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss">
+// https://vue-loader.vuejs.org/guide/scoped-css.html#mixing-local-and-global-styles
+
 @import "swiper/swiper-bundle.min.css";
 
 #app {

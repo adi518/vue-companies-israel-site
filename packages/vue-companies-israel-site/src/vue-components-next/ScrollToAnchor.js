@@ -1,4 +1,4 @@
-import { flattenRoutes } from "../utils";
+import { flattenRoutes } from "../flatten-routes";
 
 const getPaths = (router) =>
   flattenRoutes(router.options.routes).reduce(
